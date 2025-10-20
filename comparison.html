@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Сравнение - Сборщики проектов</title>
+    <link rel="stylesheet" href="https://unpkg.com/open-props"/>
+    <link rel="stylesheet" href="https://unpkg.com/open-props/normalize.min.css"/>
+    <!-- Тот же CSS что и в webpack.html -->
+    <style>
+        /* Тот же CSS что и в webpack.html плюс стили для таблицы */
+        :root {
+            --primary: var(--blue-6);
+            --surface-1: var(--gray-0);
+            --surface-2: var(--gray-1);
+            --text-1: var(--gray-9);
+            --border-color: var(--gray-3);
+        }
+
+        body {
+            font-family: var(--font-sans);
+            line-height: var(--font-lineheight-3);
+            color: var(--text-1);
+            background: var(--surface-1);
+            margin: 0;
+            min-height: 100vh;
+            display: grid;
+            grid-template-rows: auto 1fr auto;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--size-3);
+        }
+
+        header {
+            background: var(--surface-2);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--size-3) 0;
+        }
+
+        .logo {
+            font-size: var(--font-size-4);
+            font-weight: var(--font-weight-7);
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: var(--size-4);
+            margin: 0;
+            padding: 0;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--text-1);
+            padding: var(--size-2) var(--size-3);
+            border-radius: var(--radius-2);
+            transition: var(--transition-short);
+        }
+
+        nav a:hover, nav a.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .burger {
+            display: none;
+            flex-direction: column;
+            gap: 4px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: var(--size-2);
+        }
+
+        .burger-line {
+            width: 25px;
+            height: 3px;
+            background: var(--text-1);
+            transition: var(--transition-short);
+        }
+
+        main {
+            padding: var(--size-5) 0;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: var(--size-5);
+        }
+
+        aside {
+            background: var(--surface-2);
+            padding: var(--size-4);
+            border-radius: var(--radius-3);
+            border: 1px solid var(--border-color);
+        }
+
+        .sidebar-sticky {
+            position: sticky;
+            top: 100px;
+        }
+
+        @media (min-width: 992px) {
+            .main-content {
+                grid-template-columns: 1fr 300px;
+            }
+        }
+
+        @media (min-width: 768px) and (max-width: 991px) {
+            .main-content {
+                grid-template-columns: 1fr 250px;
+            }
+        }
+
+        @media (max-width: 767px) {
+            nav ul {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: var(--surface-2);
+                border-top: 1px solid var(--border-color);
+                padding: var(--size-3);
+            }
+
+            nav ul.active {
+                display: flex;
+            }
+
+            .burger {
+                display: flex;
+            }
+
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .comparison-table {
+                overflow-x: auto;
+            }
+        }
+
+        .card {
+            background: var(--surface-2);
+            padding: var(--size-4);
+            border-radius: var(--radius-3);
+            border: 1px solid var(--border-color);
+            margin-bottom: var(--size-4);
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: var(--size-4) 0;
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: var(--size-3);
+            text-align: left;
+            border: 1px solid var(--border-color);
+        }
+
+        .comparison-table th {
+            background: var(--surface-2);
+            font-weight: var(--font-weight-7);
+        }
+
+        .comparison-table tr:nth-child(even) {
+            background: var(--surface-1);
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: var(--size-3);
+        }
+
+        input, button {
+            padding: var(--size-3);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-2);
+            font-family: inherit;
+        }
+
+        button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition-short);
+        }
+
+        button:hover {
+            background: var(--blue-7);
+        }
+
+        footer {
+            background: var(--gray-9);
+            color: white;
+            padding: var(--size-5) 0;
+            margin-top: var(--size-8);
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: var(--size-5);
+        }
+
+        @media (min-width: 768px) {
+            .footer-content {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .footer-links {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-links a {
+            color: var(--gray-4);
+            text-decoration: none;
+        }
+
+        .footer-links a:hover {
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <!-- Хедер -->
+    <header role="banner">
+        <div class="container">
+            <div class="header-inner">
+                <a href="index.html" class="logo">🚀 Сборщики Проектов</a>
+                
+                <button class="burger" aria-label="Меню">
+                    <span class="burger-line"></span>
+                    <span class="burger-line"></span>
+                    <span class="burger-line"></span>
+                </button>
+                
+                <nav role="navigation">
+                    <ul>
+                        <li><a href="index.html">Главная</a></li>
+                        <li><a href="webpack.html">Webpack</a></li>
+                        <li><a href="vite.html">Vite</a></li>
+                        <li><a href="gulp.html">Gulp</a></li>
+                        <li><a href="comparison.html" class="active">Сравнение</a></li>
+                        <li><a href="examples.html">Примеры</a></li>
+                        <li><a href="resources.html">Ресурсы</a></li>
+                        <li><a href="about.html">О проекте</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Основной контент -->
+    <main role="main">
+        <div class="container">
+            <div class="main-content">
+                <div class="content">
+                    <!-- Заголовок страницы -->
+                    <section class="card">
+                        <h1>📊 Сравнение сборщиков</h1>
+                        <p>Детальное сравнение Webpack, Vite и Gulp по ключевым параметрам</p>
+                    </section>
+
+                    <!-- Таблица сравнения -->
+                    <section class="card">
+                        <h2>Сравнительная таблица</h2>
+                        <div class="comparison-table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Характеристика</th>
+                                        <th>Webpack</th>
+                                        <th>Vite</th>
+                                        <th>Gulp</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Основная задача</strong></td>
+                                        <td>Модульная сборка</td>
+                                        <td>Быстрая разработка + сборка</td>
+                                        <td>Автоматизация задач</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Скорость разработки</strong></td>
+                                        <td>⚡⚡</td>
+                                        <td>⚡⚡⚡⚡⚡</td>
+                                        <td>⚡⚡⚡</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Сложность настройки</strong></td>
+                                        <td>Высокая</td>
+                                        <td>Низкая</td>
+                                        <td>Средняя</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Экосистема</strong></td>
+                                        <td>Огромная</td>
+                                        <td>Растущая</td>
+                                        <td>Большая</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Идеальный случай использования</strong></td>
+                                        <td>Крупные enterprise-проекты</td>
+                                        <td>Современные SPA-приложения</td>
+                                        <td>Автоматизация рабочих процессов</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Конфигурация</strong></td>
+                                        <td>webpack.config.js</td>
+                                        <td>vite.config.js</td>
+                                        <td>gulpfile.js</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>HMR (Hot Module Replacement)</strong></td>
+                                        <td>✅ Есть</td>
+                                        <td>✅ Есть (сверхбыстрый)</td>
+                                        <td>❌ Нет</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Tree Shaking</strong></td>
+                                        <td>✅ Есть</td>
+                                        <td>✅ Есть</td>
+                                        <td>❌ Нет</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Code Splitting</strong></td>
+                                        <td>✅ Есть</td>
+                                        <td>✅ Есть</td>
+                                        <td>❌ Нет</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>TypeScript из коробки</strong></td>
+                                        <td>❌ Нет</td>
+                                        <td>✅ Есть</td>
+                                        <td>❌ Нет</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+
+                    <!-- Рекомендации -->
+                    <section class="card">
+                        <h2>Рекомендации по выбору</h2>
+                        
+                        <h3>Когда выбирать Webpack?</h3>
+                        <ul>
+                            <li>Большие enterprise-проекты со сложной архитектурой</li>
+                            <li>Проекты с кастомными требованиями к сборке</li>
+                            <li>Когда нужен полный контроль над процессом сборки</li>
+                            <li>Легаси проекты, миграция с других систем</li>
+                        </ul>
+
+                        <h3>Когда выбирать Vite?</h3>
+                        <ul>
+                            <li>Новые проекты на современных фреймворках (Vue, React, Svelte)</li>
+                            <li>Когда важна скорость разработки</li>
+                            <li>Для прототипирования и быстрого старта</li>
+                            <li>Проекты с TypeScript</li>
+                        </ul>
+
+                        <h3>Когда выбирать Gulp?</h3>
+                        <ul>
+                            <li>Для автоматизации задач (оптимизация изображений, деплой)</li>
+                            <li>Статические сайты и лендинги</li>
+                            <li>Когда не нужна модульная сборка</li>
+                            <li>В комбинации с другими инструментами</li>
+                        </ul>
+                    </section>
+                </div>
+
+                <!-- Сайдбар -->
+                <aside role="complementary">
+                    <div class="sidebar-sticky">
+                        <section class="card">
+                            <h3>📧 Подписка</h3>
+                            <form aria-label="Форма подписки">
+                                <input type="email" placeholder="Ваш email" required>
+                                <button type="submit">Подписаться</button>
+                            </form>
+                        </section>
+
+                        <section class="card">
+                            <h3>📈 Популярность</h3>
+                            <p>Согласно опросу 2024:</p>
+                            <ul>
+                                <li>Webpack: 58%</li>
+                                <li>Vite: 32%</li>
+                                <li>Gulp: 10%</li>
+                            </ul>
+                        </section>
+
+                        <section class="card">
+                            <h3>🔍 Дополнительно</h3>
+                            <ul class="footer-links">
+                                <li><a href="examples.html">Практические примеры</a></li>
+                                <li><a href="resources.html">Обучающие ресурсы</a></li>
+                                <li><a href="webpack.html">Подробнее о Webpack</a></li>
+                            </ul>
+                        </section>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </main>
+
+    <!-- Футер -->
+    <footer role="contentinfo">
+        <div class="container">
+            <div class="footer-content">
+                <div>
+                    <h3>О проекте</h3>
+                    <p>Образовательный проект о современных инструментах сборки</p>
+                </div>
+                <div>
+                    <h3>Ссылки</h3>
+                    <ul class="footer-links">
+                        <li><a href="index.html">Главная</a></li>
+                        <li><a href="webpack.html">Webpack</a></li>
+                        <li><a href="vite.html">Vite</a></li>
+                        <li><a href="gulp.html">Gulp</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3>Контакты</h3>
+                    <ul class="footer-links">
+                        <li>Email: SpongeBob2217@mail.ru</li>
+                        <li>GitHub: Vitalyboss77</li>
+                    </ul>
+                </div>
+            </div>
+            <div style="text-align: center; margin-top: var(--size-5); padding-top: var(--size-4); border-top: 1px solid var(--gray-7);">
+                <p>&copy; 2025 Сборщики проектов. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Бургер-меню
+        document.querySelector('.burger').addEventListener('click', function() {
+            document.querySelector('nav ul').classList.toggle('active');
+        });
+
+        // Закрытие меню при клике на ссылку (мобильные)
+        document.querySelectorAll('nav a').forEach(link => {
+            link.addEventListener('click', function() {
+                if (window.innerWidth < 768) {
+                    document.querySelector('nav ul').classList.remove('active');
+                }
+            });
+        });
+
+        // Обработка формы
+        document.querySelector('form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Спасибо за подписку!');
+            this.reset();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gulp - Сборщики проектов</title>
+    <link rel="stylesheet" href="https://unpkg.com/open-props"/>
+    <link rel="stylesheet" href="https://unpkg.com/open-props/normalize.min.css"/>
+    <!-- Тот же CSS что и в webpack.html -->
+    <style>
+        /* Тот же CSS что и в webpack.html */
+        :root {
+            --primary: var(--blue-6);
+            --surface-1: var(--gray-0);
+            --surface-2: var(--gray-1);
+            --text-1: var(--gray-9);
+            --border-color: var(--gray-3);
+        }
+
+        body {
+            font-family: var(--font-sans);
+            line-height: var(--font-lineheight-3);
+            color: var(--text-1);
+            background: var(--surface-1);
+            margin: 0;
+            min-height: 100vh;
+            display: grid;
+            grid-template-rows: auto 1fr auto;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--size-3);
+        }
+
+        header {
+            background: var(--surface-2);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--size-3) 0;
+        }
+
+        .logo {
+            font-size: var(--font-size-4);
+            font-weight: var(--font-weight-7);
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: var(--size-4);
+            margin: 0;
+            padding: 0;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--text-1);
+            padding: var(--size-2) var(--size-3);
+            border-radius: var(--radius-2);
+            transition: var(--transition-short);
+        }
+
+        nav a:hover, nav a.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .burger {
+            display: none;
+            flex-direction: column;
+            gap: 4px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: var(--size-2);
+        }
+
+        .burger-line {
+            width: 25px;
+            height: 3px;
+            background: var(--text-1);
+            transition: var(--transition-short);
+        }
+
+        main {
+            padding: var(--size-5) 0;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: var(--size-5);
+        }
+
+        aside {
+            background: var(--surface-2);
+            padding: var(--size-4);
+            border-radius: var(--radius-3);
+            border: 1px solid var(--border-color);
+        }
+
+        .sidebar-sticky {
+            position: sticky;
+            top: 100px;
+        }
+
+        @media (min-width: 992px) {
+            .main-content {
+                grid-template-columns: 1fr 300px;
+            }
+        }
+
+        @media (min-width: 768px) and (max-width: 991px) {
+            .main-content {
+                grid-template-columns: 1fr 250px;
+            }
+        }
+
+        @media (max-width: 767px) {
+            nav ul {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: var(--surface-2);
+                border-top: 1px solid var(--border-color);
+                padding: var(--size-3);
+            }
+
+            nav ul.active {
+                display: flex;
+            }
+
+            .burger {
+                display: flex;
+            }
+
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: var(--surface-2);
+            padding: var(--size-4);
+            border-radius: var(--radius-3);
+            border: 1px solid var(--border-color);
+            margin-bottom: var(--size-4);
+        }
+
+        .code-block {
+            background: var(--gray-1);
+            padding: var(--size-4);
+            border-radius: var(--radius-2);
+            border: 1px solid var(--border-color);
+            overflow-x: auto;
+            margin: var(--size-4) 0;
+        }
+
+        .code-block pre {
+            margin: 0;
+            font-family: var(--font-mono);
+            font-size: var(--font-size-2);
+            white-space: pre-wrap;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: var(--size-3);
+        }
+
+        input, button {
+            padding: var(--size-3);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-2);
+            font-family: inherit;
+        }
+
+        button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition-short);
+        }
+
+        button:hover {
+            background: var(--blue-7);
+        }
+
+        footer {
+            background: var(--gray-9);
+            color: white;
+            padding: var(--size-5) 0;
+            margin-top: var(--size-8);
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: var(--size-5);
+        }
+
+        @media (min-width: 768px) {
+            .footer-content {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .footer-links {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-links a {
+            color: var(--gray-4);
+            text-decoration: none;
+        }
+
+        .footer-links a:hover {
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <!-- Хедер -->
+    <header role="banner">
+        <div class="container">
+            <div class="header-inner">
+                <a href="index.html" class="logo">🚀 Сборщики Проектов</a>
+                
+                <button class="burger" aria-label="Меню">
+                    <span class="burger-line"></span>
+                    <span class="burger-line"></span>
+                    <span class="burger-line"></span>
+                </button>
+                
+                <nav role="navigation">
+                    <ul>
+                        <li><a href="index.html">Главная</a></li>
+                        <li><a href="webpack.html">Webpack</a></li>
+                        <li><a href="vite.html">Vite</a></li>
+                        <li><a href="gulp.html" class="active">Gulp</a></li>
+                        <li><a href="comparison.html">Сравнение</a></li>
+                        <li><a href="examples.html">Примеры</a></li>
+                        <li><a href="resources.html">Ресурсы</a></li>
+                        <li><a href="about.html">О проекте</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Основной контент -->
+    <main role="main">
+        <div class="container">
+            <div class="main-content">
+                <div class="content">
+                    <!-- Заголовок страницы -->
+                    <section class="card">
+                        <h1>🔧 Gulp</h1>
+                        <p>Гибкий таск-раннер для автоматизации процессов разработки</p>
+                    </section>
+
+                    <!-- Основное описание -->
+                    <section class="card">
+                        <h2>Что такое Gulp?</h2>
+                        <p><strong>Gulp</strong> — это таск-раннер, который автоматизирует рутинные задачи в процессе разработки. В отличие от Webpack и Vite, Gulp не занимается модульной сборкой, а фокусируется на автоматизации.</p>
+                        
+                        <h3>Ключевые особенности:</h3>
+                        <ul>
+                            <li>⚙️ Автоматизация повторяющихся задач</li>
+                            <li>📁 Работа с файловыми потоками (streams)</li>
+                            <li>🔌 Большой выбор плагинов</li>
+                            <li>✍️ Кодовая конфигурация (вместо JSON)</li>
+                            <li>🔄 Простота и гибкость</li>
+                        </ul>
+                    </section>
+
+                    <!-- Пример конфигурации -->
+                    <section class="card">
+                        <h2>Базовая конфигурация</h2>
+                        <p>Пример простого файла <code>gulpfile.js</code>:</p>
+                        
+                        <div class="code-block">
+                            <pre><code>const { src, dest, series, parallel } = require('gulp');
+const minifyCSS = require('gulp-clean-css');
+const concat = require('gulp-concat');
+
+function cssTask() {
+  return src('src/**/*.css')
+    .pipe(concat('styles.min.css'))
+    .pipe(minifyCSS())
+    .pipe(dest('dist/'));
+}
+
+function jsTask() {
+  return src('src/**/*.js')
+    .pipe(concat('script.min.js'))
+    .pipe(dest('dist/'));
+}
+
+exports.default = parallel(cssTask, jsTask);</code></pre>
+                        </div>
+                    </section>
+
+                    <!-- Популярные плагины -->
+                    <section class="card">
+                        <h2>Популярные плагины Gulp</h2>
+                        <ul>
+                            <li><strong>gulp-sass</strong> - компиляция SASS/SCSS</li>
+                            <li><strong>gulp-autoprefixer</strong> - автопрефиксы для CSS</li>
+                            <li><strong>gulp-uglify</strong> - минификация JavaScript</li>
+                            <li><strong>gulp-imagemin</strong> - оптимизация изображений</li>
+                            <li><strong>gulp-babel</strong> - транспиляция ES6+</li>
+                        </ul>
+                    </section>
+                </div>
+
+                <!-- Сайдбар -->
+                <aside role="complementary">
+                    <div class="sidebar-sticky">
+                        <section class="card">
+                            <h3>📧 Подписка</h3>
+                            <form aria-label="Форма подписки">
+                                <input type="email" placeholder="Ваш email" required>
+                                <button type="submit">Подписаться</button>
+                            </form>
+                        </section>
+
+                        <section class="card">
+                            <h3>🔗 Быстрые ссылки</h3>
+                            <ul class="footer-links">
+                                <li><a href="https://gulpjs.com/" target="_blank">Официальная документация</a></li>
+                                <li><a href="https://github.com/gulpjs/gulp" target="_blank">GitHub репозиторий</a></li>
+                                <li><a href="https://gulpjs.com/plugins/" target="_blank">Официальные плагины</a></li>
+                            </ul>
+                        </section>
+
+                        <section class="card">
+                            <h3>📊 Применение</h3>
+                            <p>Gulp идеально подходит для:</p>
+                            <ul>
+                                <li>Статических сайтов</li>
+                                <li>Оптимизации ресурсов</li>
+                                <li>Автоматизации деплоя</li>
+                                <li>Обработки изображений</li>
+                            </ul>
+                        </section>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </main>
+
+    <!-- Футер -->
+    <footer role="contentinfo">
+        <div class="container">
+            <div class="footer-content">
+                <div>
+                    <h3>О проекте</h3>
+                    <p>Образовательный проект о современных инструментах сборки</p>
+                </div>
+                <div>
+                    <h3>Ссылки</h3>
+                    <ul class="footer-links">
+                        <li><a href="index.html">Главная</a></li>
+                        <li><a href="webpack.html">Webpack</a></li>
+                        <li><a href="vite.html">Vite</a></li>
+                        <li><a href="gulp.html">Gulp</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3>Контакты</h3>
+                    <ul class="footer-links">
+                        <li>Email: SpongeBob2217@mail.ru</li>
+                        <li>GitHub: Vitalyboss77</li>
+                    </ul>
+                </div>
+            </div>
+            <div style="text-align: center; margin-top: var(--size-5); padding-top: var(--size-4); border-top: 1px solid var(--gray-7);">
+                <p>&copy; 2025 Сборщики проектов. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Бургер-меню
+        document.querySelector('.burger').addEventListener('click', function() {
+            document.querySelector('nav ul').classList.toggle('active');
+        });
+
+        // Закрытие меню при клике на ссылку (мобильные)
+        document.querySelectorAll('nav a').forEach(link => {
+            link.addEventListener('click', function() {
+                if (window.innerWidth < 768) {
+                    document.querySelector('nav ul').classList.remove('active');
+                }
+            });
+        });
+
+        // Обработка формы
+        document.querySelector('form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Спасибо за подписку!');
+            this.reset();
+        });
+    </script>
+</body>
+</html>

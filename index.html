@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Сборщики проектов - Главная</title>
+    <link rel="stylesheet" href="https://unpkg.com/open-props"/>
+    <link rel="stylesheet" href="https://unpkg.com/open-props/normalize.min.css"/>
+    <style>
+        /* Базовые стили с Open Props */
+        :root {
+            --primary: var(--blue-6);
+            --surface-1: var(--gray-0);
+            --surface-2: var(--gray-1);
+            --text-1: var(--gray-9);
+            --border-color: var(--gray-3);
+        }
+
+        /* Глобальные стили */
+        body {
+            font-family: var(--font-sans);
+            line-height: var(--font-lineheight-3);
+            color: var(--text-1);
+            background: var(--surface-1);
+            margin: 0;
+            min-height: 100vh;
+            display: grid;
+            grid-template-rows: auto 1fr auto;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--size-3);
+        }
+
+        /* Хедер */
+        header {
+            background: var(--surface-2);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--size-3) 0;
+        }
+
+        .logo {
+            font-size: var(--font-size-4);
+            font-weight: var(--font-weight-7);
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        /* Навигация */
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: var(--size-4);
+            margin: 0;
+            padding: 0;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--text-1);
+            padding: var(--size-2) var(--size-3);
+            border-radius: var(--radius-2);
+            transition: var(--transition-short);
+        }
+
+        nav a:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Бургер-меню */
+        .burger {
+            display: none;
+            flex-direction: column;
+            gap: 4px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: var(--size-2);
+        }
+
+        .burger-line {
+            width: 25px;
+            height: 3px;
+            background: var(--text-1);
+            transition: var(--transition-short);
+        }
+
+        /* Основной контент */
+        main {
+            padding: var(--size-5) 0;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: var(--size-5);
+        }
+
+        /* Сайдбар (липкий) */
+        aside {
+            background: var(--surface-2);
+            padding: var(--size-4);
+            border-radius: var(--radius-3);
+            border: 1px solid var(--border-color);
+        }
+
+        .sidebar-sticky {
+            position: sticky;
+            top: 100px;
+        }
+
+        /* Сетка для десктопов */
+        @media (min-width: 992px) {
+            .main-content {
+                grid-template-columns: 1fr 300px;
+            }
+        }
+
+        /* Сетка для планшетов */
+        @media (min-width: 768px) and (max-width: 991px) {
+            .main-content {
+                grid-template-columns: 1fr 250px;
+            }
+        }
+
+        /* Стили для мобильных */
+        @media (max-width: 767px) {
+            nav ul {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: var(--surface-2);
+                border-top: 1px solid var(--border-color);
+                padding: var(--size-3);
+            }
+
+            nav ul.active {
+                display: flex;
+            }
+
+            .burger {
+                display: flex;
+            }
+
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Карточки */
+        .card {
+            background: var(--surface-2);
+            padding: var(--size-4);
+            border-radius: var(--radius-3);
+            border: 1px solid var(--border-color);
+            margin-bottom: var(--size-4);
+        }
+
+        /* Таблица */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: var(--size-4) 0;
+        }
+
+        th, td {
+            padding: var(--size-3);
+            text-align: left;
+            border: 1px solid var(--border-color);
+        }
+
+        th {
+            background: var(--surface-2);
+        }
+
+        /* Видео контейнер */
+        .video-container {
+            position: relative;
+            width: 100%;
+            height: 0;
+            padding-bottom: 56.25%;
+            margin: var(--size-4) 0;
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: var(--radius-2);
+        }
+
+        /* Форма */
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: var(--size-3);
+        }
+
+        input, button {
+            padding: var(--size-3);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-2);
+            font-family: inherit;
+        }
+
+        button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition-short);
+        }
+
+        button:hover {
+            background: var(--blue-7);
+        }
+
+        /* Футер */
+        footer {
+            background: var(--gray-9);
+            color: white;
+            padding: var(--size-5) 0;
+            margin-top: var(--size-8);
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: var(--size-5);
+        }
+
+        @media (min-width: 768px) {
+            .footer-content {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .footer-links {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-links a {
+            color: var(--gray-4);
+            text-decoration: none;
+        }
+
+        .footer-links a:hover {
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <!-- Хедер -->
+    <header role="banner">
+        <div class="container">
+            <div class="header-inner">
+                <a href="index.html" class="logo">🚀 Сборщики Проектов</a>
+                
+                <button class="burger" aria-label="Меню">
+                    <span class="burger-line"></span>
+                    <span class="burger-line"></span>
+                    <span class="burger-line"></span>
+                </button>
+                
+                <nav role="navigation">
+                    <ul>
+                        <li><a href="index.html">Главная</a></li>
+                        <li><a href="webpack.html">Webpack</a></li>
+                        <li><a href="vite.html">Vite</a></li>
+                        <li><a href="gulp.html">Gulp</a></li>
+                        <li><a href="comparison.html">Сравнение</a></li>
+                        <li><a href="examples.html">Примеры</a></li>
+                        <li><a href="resources.html">Ресурсы</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Основной контент -->
+    <main role="main">
+        <div class="container">
+            <div class="main-content">
+                <div class="content">
+                    <!-- Герой секция -->
+                    <section class="card">
+                        <h1>Сборщики проектов: Webpack, Vite, Gulp</h1>
+                        <p>Изучите современные инструменты для сборки веб-приложений</p>
+                    </section>
+
+                    <!-- Карточки инструментов -->
+                    <section class="card">
+                        <h2>Основные инструменты</h2>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: var(--size-4);">
+                            <article>
+                                <h3>📦 Webpack</h3>
+                                <p>Мощный модульный сборщик для сложных приложений</p>
+                                <a href="webpack.html">Подробнее</a>
+                            </article>
+                            <article>
+                                <h3>⚡ Vite</h3>
+                                <p>Сверхбыстрый инструмент следующего поколения</p>
+                                <a href="vite.html">Подробнее</a>
+                            </article>
+                            <article>
+                                <h3>🔧 Gulp</h3>
+                                <p>Гибкий таск-раннер для автоматизации процессов</p>
+                                <a href="gulp.html">Подробнее</a>
+                            </article>
+                        </div>
+                    </section>
+
+                    <!-- Таблица сравнения -->
+                    <section class="card">
+                        <h2>Сравнение сборщиков</h2>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Характеристика</th>
+                                    <th>Webpack</th>
+                                    <th>Vite</th>
+                                    <th>Gulp</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Скорость разработки</td>
+                                    <td>⚡⚡</td>
+                                    <td>⚡⚡⚡⚡⚡</td>
+                                    <td>⚡⚡⚡</td>
+                                </tr>
+                                <tr>
+                                    <td>Сложность настройки</td>
+                                    <td>Высокая</td>
+                                    <td>Низкая</td>
+                                    <td>Средняя</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </section>
+
+                    <!-- Видео -->
+                    <section class="card">
+                        <h2>Видео обзор</h2>
+                        <div class="video-container">
+                            <iframe src="https://www.youtube.com/embed/KCrXgy8qtjM" 
+                                    title="Сравнение сборщиков проектов" 
+                                    allowfullscreen></iframe>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- Сайдбар -->
+                    <div class="sidebar-sticky">
+                        <section class="card">
+                            <h3>📧 Подписка</h3>
+                            <form aria-label="Форма подписки">
+                                <input type="email" placeholder="Ваш email" required>
+                                <button type="submit">Подписаться</button>
+                            </form>
+                        </section>
+
+                        <section class="card">
+                            <h3>🔥 Популярные статьи</h3>
+                            <ul class="footer-links">
+                                <li><a href="https://webdevnet.ru/webpack-5-whats-new/?ysclid=mgyz2s4xmc999501179">Webpack 5: что нового</a></li>
+                                <li><a href="https://proglib.io/p/vite-vs-cra-pochemu-razrabotchiki-massovo-perehodyat-na-novyy-instrument-2024-10-28?ysclid=mgyz4m4xtc541078672">Vite vs Create React App</a></li>
+                                <li><a href="https://webref.ru/dev/automate-with-gulp?ysclid=mgyz5i6fd9992494433">Автоматизация работы с Gulp</a></li>
+                            </ul>
+                        </section>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </main>
+
+    <!-- Футер -->
+    <footer role="contentinfo">
+        <div class="container">
+            <div class="footer-content">
+                <div>
+                    <h3>О проекте</h3>
+                    <p>Образовательный проект о современных инструментах сборки</p>
+                </div>
+                <div>
+                    <h3>Ссылки</h3>
+                    <ul class="footer-links">
+                        <li><a href="index.html">Главная</a></li>
+                        <li><a href="webpack.html">Webpack</a></li>
+                        <li><a href="vite.html">Vite</a></li>
+                        <li><a href="gulp.html">Gulp</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3>Контакты</h3>
+                    <ul class="footer-links">
+                        <li>Email: SpongeBob2217@mail.ru</li>
+                        <li>GitHub: Vitalyboss77</li>
+                    </ul>
+                </div>
+            </div>
+            <div style="text-align: center; margin-top: var(--size-5); padding-top: var(--size-4); border-top: 1px solid var(--gray-7);">
+                <p>&copy; 2025 Сборщики проектов. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Бургер-меню
+        document.querySelector('.burger').addEventListener('click', function() {
+            document.querySelector('nav ul').classList.toggle('active');
+        });
+
+        // Закрытие меню при клике на ссылку (мобильные)
+        document.querySelectorAll('nav a').forEach(link => {
+            link.addEventListener('click', function() {
+                if (window.innerWidth < 768) {
+                    document.querySelector('nav ul').classList.remove('active');
+                }
+            });
+        });
+
+        // Обработка формы
+        document.querySelector('form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Спасибо за подписку!');
+            this.reset();
+        });
+    </script>
+</body>
+</html>

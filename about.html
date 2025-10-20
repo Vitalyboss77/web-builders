@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>О проекте - Сборщики проектов</title>
+    <link rel="stylesheet" href="https://unpkg.com/open-props"/>
+    <link rel="stylesheet" href="https://unpkg.com/open-props/normalize.min.css"/>
+    <!-- Тот же CSS что и в webpack.html -->
+    <style>
+        /* Тот же CSS что и в webpack.html */
+        :root {
+            --primary: var(--blue-6);
+            --surface-1: var(--gray-0);
+            --surface-2: var(--gray-1);
+            --text-1: var(--gray-9);
+            --border-color: var(--gray-3);
+        }
+
+        body {
+            font-family: var(--font-sans);
+            line-height: var(--font-lineheight-3);
+            color: var(--text-1);
+            background: var(--surface-1);
+            margin: 0;
+            min-height: 100vh;
+            display: grid;
+            grid-template-rows: auto 1fr auto;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--size-3);
+        }
+
+        header {
+            background: var(--surface-2);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--size-3) 0;
+        }
+
+        .logo {
+            font-size: var(--font-size-4);
+            font-weight: var(--font-weight-7);
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: var(--size-4);
+            margin: 0;
+            padding: 0;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--text-1);
+            padding: var(--size-2) var(--size-3);
+            border-radius: var(--radius-2);
+            transition: var(--transition-short);
+        }
+
+        nav a:hover, nav a.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .burger {
+            display: none;
+            flex-direction: column;
+            gap: 4px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: var(--size-2);
+        }
+
+        .burger-line {
+            width: 25px;
+            height: 3px;
+            background: var(--text-1);
+            transition: var(--transition-short);
+        }
+
+        main {
+            padding: var(--size-5) 0;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: var(--size-5);
+        }
+
+        aside {
+            background: var(--surface-2);
+            padding: var(--size-4);
+            border-radius: var(--radius-3);
+            border: 1px solid var(--border-color);
+        }
+
+        .sidebar-sticky {
+            position: sticky;
+            top: 100px;
+        }
+
+        @media (min-width: 992px) {
+            .main-content {
+                grid-template-columns: 1fr 300px;
+            }
+        }
+
+        @media (min-width: 768px) and (max-width: 991px) {
+            .main-content {
+                grid-template-columns: 1fr 250px;
+            }
+        }
+
+        @media (max-width: 767px) {
+            nav ul {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: var(--surface-2);
+                border-top: 1px solid var(--border-color);
+                padding: var(--size-3);
+            }
+
+            nav ul.active {
+                display: flex;
+            }
+
+            .burger {
+                display: flex;
+            }
+
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: var(--surface-2);
+            padding: var(--size-4);
+            border-radius: var(--radius-3);
+            border: 1px solid var(--border-color);
+            margin-bottom: var(--size-4);
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--size-4);
+        }
+
+        .team-member {
+            text-align: center;
+            padding: var(--size-4);
+        }
+
+        .team-member img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin-bottom: var(--size-3);
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: var(--size-3);
+        }
+
+        input, textarea, button {
+            padding: var(--size-3);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-2);
+            font-family: inherit;
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition-short);
+        }
+
+        button:hover {
+            background: var(--blue-7);
+        }
+
+        footer {
+            background: var(--gray-9);
+            color: white;
+            padding: var(--size-5) 0;
+            margin-top: var(--size-8);
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: var(--size-5);
+        }
+
+        @media (min-width: 768px) {
+            .footer-content {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .footer-links {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-links a {
+            color: var(--gray-4);
+            text-decoration: none;
+        }
+
+        .footer-links a:hover {
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <!-- Хедер -->
+    <header role="banner">
+        <div class="container">
+            <div class="header-inner">
+                <a href="index.html" class="logo">🚀 Сборщики Проектов</a>
+                
+                <button class="burger" aria-label="Меню">
+                    <span class="burger-line"></span>
+                    <span class="burger-line"></span>
+                    <span class="burger-line"></span>
+                </button>
+                
+                <nav role="navigation">
+                    <ul>
+                        <li><a href="index.html">Главная</a></li>
+                        <li><a href="webpack.html">Webpack</a></li>
+                        <li><a href="vite.html">Vite</a></li>
+                        <li><a href="gulp.html">Gulp</a></li>
+                        <li><a href="comparison.html">Сравнение</a></li>
+                        <li><a href="examples.html">Примеры</a></li>
+                        <li><a href="resources.html">Ресурсы</a></li>
+                        <li><a href="about.html" class="active">О проекте</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Основной контент -->
+    <main role="main">
+        <div class="container">
+            <div class="main-content">
+                <div class="content">
+                    <!-- Заголовок страницы -->
+                    <section class="card">
+                        <h1>ℹ️ О проекте</h1>
+                        <p>Образовательный ресурс о современных инструментах сборки веб-приложений</p>
+                    </section>
+
+                    <!-- О проекте -->
+                    <section class="card">
+                        <h2>Наша миссия</h2>
+                        <p>Мы создали этот проект, чтобы помочь разработчикам разобраться в современных инструментах сборки и сделать осознанный выбор для своих проектов.</p>
+                        
+                        <h3>Цели проекта:</h3>
+                        <ul>
+                            <li>📚 Предоставить понятные и структурированные материалы о Webpack, Vite и Gulp</li>
+                            <li>⚡ Показать практические примеры использования каждого инструмента</li>
+                            <li>🔍 Помочь сравнить инструменты и выбрать подходящий для конкретных задач</li>
+                            <li>🚀 Упростить начало работы с современными системами сборки</li>
+                        </ul>
+                    </section>
+
+                    <!-- Технологии -->
+                    <section class="card">
+                        <h2>Используемые технологии</h2>
+                        
+                        <h3>Фронтенд:</h3>
+                        <ul>
+                            <li><strong>HTML5</strong> - семантическая разметка</li>
+                            <li><strong>CSS3 + Open Props</strong> - современные стили с CSS-переменными</li>
+                            <li><strong>JavaScript</strong> - нативный JS для интерактива</li>
+                        </ul>
+
+                        <h3>Инструменты разработки:</h3>
+                        <ul>
+                            <li><strong>Open Props</strong> - CSS-фреймворк для дизайн-системы</li>
+                            <li><strong>Git</strong> - контроль версий</li>
+                            <li><strong>VS Code</strong> - среда разработки</li>
+                        </ul>
+
+                        <h3>Принципы разработки:</h3>
+                        <ul>
+                            <li>Mobile-first подход</li>
+                            <li>Семантическая верстка</li>
+                            <li>Доступность (a11y)</li>
+                            <li>Производительность</li>
+                        </ul>
+                    </section>
+
+                    <!-- Команда -->
+                    <section class="card">
+                        <h2>Команда проекта</h2>
+                        <div class="team-grid">
+                            <div class="team-member">
+                                <div style="width: 100px; height: 100px; background: var(--blue-3); border-radius: 50%; margin: 0 auto var(--size-3); display: flex; align-items: center; justify-content: center; font-size: var(--font-size-6);">👨‍💻</div>
+                                <h3>Виталий</h3>
+                                <p>Фронтенд разработчик</p>
+                                <p>Специализация: современные инструменты сборки</p>
+                            </div>
+                            
+                            <div class="team-member">
+                                <div style="width: 100px; height: 100px; background: var(--green-3); border-radius: 50%; margin: 0 auto var(--size-3); display: flex; align-items: center; justify-content: center; font-size: var(--font-size-6);">👨‍💻</div>
+                                <h3>Илья</h3>
+                                <p>Гений</p>
+                                <p>Специализация: документация и обучающие материалы</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Контакты -->
+                    <section class="card">
+                        <h2>Свяжитесь с нами</h2>
+                        <p>Есть вопросы или предложения? Мы будем рады услышать ваше мнение!</p>
+                        
+                        <form aria-label="Форма обратной связи">
+                            <input type="text" placeholder="Ваше имя" required>
+                            <input type="email" placeholder="Ваш email" required>
+                            <textarea placeholder="Ваше сообщение" required></textarea>
+                            <button type="submit">Отправить сообщение</button>
+                        </form>
+                    </section>
+                </div>
+
+                <!-- Сайдбар -->
+                <aside role="complementary">
+                    <div class="sidebar-sticky">
+                        <section class="card">
+                            <h3>📧 Подписка</h3>
+                            <form aria-label="Форма подписки">
+                                <input type="email" placeholder="Ваш email" required>
+                                <button type="submit">Подписаться</button>
+                            </form>
+                        </section>
+                        <section class="card">
+                            <h3>🔗 Быстрые ссылки</h3>
+                            <ul>
+                                <li><a href="index.html">На главную</a></li>
+                                <li><a href="comparison.html">Сравнение инструментов</a></li>
+                                <li><a href="examples.html">Практические примеры</a></li>
+                                <li><a href="resources.html">Полезные ресурсы</a></li>
+                            </ul>
+                        </section>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </main>
+
+    <!-- Футер -->
+    <footer role="contentinfo">
+        <div class="container">
+            <div class="footer-content">
+                <div>
+                    <h3>О проекте</h3>
+                    <p>Образовательный проект о современных инструментах сборки</p>
+                </div>
+                <div>
+                    <h3>Ссылки</h3>
+                    <ul class="footer-links">
+                        <li><a href="index.html">Главная</a></li>
+                        <li><a href="webpack.html">Webpack</a></li>
+                        <li><a href="vite.html">Vite</a></li>
+                        <li><a href="gulp.html">Gulp</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3>Контакты</h3>
+                    <ul class="footer-links">
+                        <li>Email: SpongeBob2217@mail.ru</li>
+                        <li>GitHub: Vitalyboss77</li>
+                    </ul>
+                </div>
+            </div>
+            <div style="text-align: center; margin-top: var(--size-5); padding-top: var(--size-4); border-top: 1px solid var(--gray-7);">
+                <p>&copy; 2025 Сборщики проектов. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Бургер-меню
+        document.querySelector('.burger').addEventListener('click', function() {
+            document.querySelector('nav ul').classList.toggle('active');
+        });
+
+        // Закрытие меню при клике на ссылку (мобильные)
+        document.querySelectorAll('nav a').forEach(link => {
+            link.addEventListener('click', function() {
+                if (window.innerWidth < 768) {
+                    document.querySelector('nav ul').classList.remove('active');
+                }
+            });
+        });
+
+        // Обработка формы подписки
+        document.querySelectorAll('form')[0].addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Спасибо за подписку!');
+            this.reset();
+        });
+
+        // Обработка формы обратной связи
+        document.querySelectorAll('form')[1].addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Спасибо за ваше сообщение! Мы свяжемся с вами в ближайшее время.');
+            this.reset();
+        });
+    </script>
+</body>
+</html>

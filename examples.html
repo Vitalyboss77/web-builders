@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Примеры - Сборщики проектов</title>
+    <link rel="stylesheet" href="https://unpkg.com/open-props"/>
+    <link rel="stylesheet" href="https://unpkg.com/open-props/normalize.min.css"/>
+    <!-- Тот же CSS что и в webpack.html -->
+    <style>
+        /* Тот же CSS что и в webpack.html */
+        :root {
+            --primary: var(--blue-6);
+            --surface-1: var(--gray-0);
+            --surface-2: var(--gray-1);
+            --text-1: var(--gray-9);
+            --border-color: var(--gray-3);
+        }
+
+        body {
+            font-family: var(--font-sans);
+            line-height: var(--font-lineheight-3);
+            color: var(--text-1);
+            background: var(--surface-1);
+            margin: 0;
+            min-height: 100vh;
+            display: grid;
+            grid-template-rows: auto 1fr auto;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--size-3);
+        }
+
+        header {
+            background: var(--surface-2);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--size-3) 0;
+        }
+
+        .logo {
+            font-size: var(--font-size-4);
+            font-weight: var(--font-weight-7);
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: var(--size-4);
+            margin: 0;
+            padding: 0;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--text-1);
+            padding: var(--size-2) var(--size-3);
+            border-radius: var(--radius-2);
+            transition: var(--transition-short);
+        }
+
+        nav a:hover, nav a.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .burger {
+            display: none;
+            flex-direction: column;
+            gap: 4px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: var(--size-2);
+        }
+
+        .burger-line {
+            width: 25px;
+            height: 3px;
+            background: var(--text-1);
+            transition: var(--transition-short);
+        }
+
+        main {
+            padding: var(--size-5) 0;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: var(--size-5);
+        }
+
+        aside {
+            background: var(--surface-2);
+            padding: var(--size-4);
+            border-radius: var(--radius-3);
+            border: 1px solid var(--border-color);
+        }
+
+        .sidebar-sticky {
+            position: sticky;
+            top: 100px;
+        }
+
+        @media (min-width: 992px) {
+            .main-content {
+                grid-template-columns: 1fr 300px;
+            }
+        }
+
+        @media (min-width: 768px) and (max-width: 991px) {
+            .main-content {
+                grid-template-columns: 1fr 250px;
+            }
+        }
+
+        @media (max-width: 767px) {
+            nav ul {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: var(--surface-2);
+                border-top: 1px solid var(--border-color);
+                padding: var(--size-3);
+            }
+
+            nav ul.active {
+                display: flex;
+            }
+
+            .burger {
+                display: flex;
+            }
+
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: var(--surface-2);
+            padding: var(--size-4);
+            border-radius: var(--radius-3);
+            border: 1px solid var(--border-color);
+            margin-bottom: var(--size-4);
+        }
+
+        .code-block {
+            background: var(--gray-1);
+            padding: var(--size-4);
+            border-radius: var(--radius-2);
+            border: 1px solid var(--border-color);
+            overflow-x: auto;
+            margin: var(--size-4) 0;
+        }
+
+        .code-block pre {
+            margin: 0;
+            font-family: var(--font-mono);
+            font-size: var(--font-size-2);
+            white-space: pre-wrap;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: var(--size-3);
+        }
+
+        input, button {
+            padding: var(--size-3);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-2);
+            font-family: inherit;
+        }
+
+        button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition-short);
+        }
+
+        button:hover {
+            background: var(--blue-7);
+        }
+
+        footer {
+            background: var(--gray-9);
+            color: white;
+            padding: var(--size-5) 0;
+            margin-top: var(--size-8);
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: var(--size-5);
+        }
+
+        @media (min-width: 768px) {
+            .footer-content {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .footer-links {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-links a {
+            color: var(--gray-4);
+            text-decoration: none;
+        }
+
+        .footer-links a:hover {
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <!-- Хедер -->
+    <header role="banner">
+        <div class="container">
+            <div class="header-inner">
+                <a href="index.html" class="logo">🚀 Сборщики Проектов</a>
+                
+                <button class="burger" aria-label="Меню">
+                    <span class="burger-line"></span>
+                    <span class="burger-line"></span>
+                    <span class="burger-line"></span>
+                </button>
+                
+                <nav role="navigation">
+                    <ul>
+                        <li><a href="index.html">Главная</a></li>
+                        <li><a href="webpack.html">Webpack</a></li>
+                        <li><a href="vite.html">Vite</a></li>
+                        <li><a href="gulp.html">Gulp</a></li>
+                        <li><a href="comparison.html">Сравнение</a></li>
+                        <li><a href="examples.html" class="active">Примеры</a></li>
+                        <li><a href="resources.html">Ресурсы</a></li>
+                        <li><a href="about.html">О проекте</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Основной контент -->
+    <main role="main">
+        <div class="container">
+            <div class="main-content">
+                <div class="content">
+                    <!-- Заголовок страницы -->
+                    <section class="card">
+                        <h1>💻 Примеры настройки</h1>
+                        <p>Практические примеры конфигурации для каждого инструмента</p>
+                    </section>
+
+                    <!-- Быстрый старт с Vite -->
+                    <section class="card">
+                        <h2>⚡ Быстрый старт с Vite</h2>
+                        <p>Создание нового проекта и запуск сервера разработки:</p>
+                        
+                        <div class="code-block">
+                            <pre><code># Создание нового проекта
+npm create vite@latest my-project -- --template react
+cd my-project
+
+# Установка зависимостей
+npm install
+
+# Запуск сервера разработки
+npm run dev</code></pre>
+                        </div>
+                        
+                        <p>После выполнения этих команд ваш проект будет доступен по адресу <code>http://localhost:5173</code></p>
+                    </section>
+
+                    <!-- Базовая настройка Webpack -->
+                    <section class="card">
+                        <h2>📦 Базовая настройка Webpack</h2>
+                        <p>Минимальная конфигурация Webpack для простого проекта:</p>
+                        
+                        <div class="code-block">
+                            <pre><code>// Установка необходимых пакетов
+npm install --save-dev webpack webpack-cli html-webpack-plugin
+
+// package.json
+{
+  "scripts": {
+    "build": "webpack",
+    "dev": "webpack serve"
+  }
+}
+
+// webpack.config.js
+const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+
+module.exports = {
+  entry: './src/index.js',
+  output: {
+    filename: 'bundle.js',
+    path: path.resolve(__dirname, 'dist'),
+  },
+  plugins: [
+    new HtmlWebpackPlugin({
+      title: 'My App',
+    }),
+  ],
+};</code></pre>
+                        </div>
+                    </section>
+
+                    <!-- Простая задача Gulp -->
+                    <section class="card">
+                        <h2>🔧 Простая задача Gulp</h2>
+                        <p>Автоматизация компиляции SASS и минификации CSS:</p>
+                        
+                        <div class="code-block">
+                            <pre><code>// Установка Gulp и плагинов
+npm install --save-dev gulp gulp-sass gulp-autoprefixer gulp-clean-css
+
+// gulpfile.js
+const { src, dest, watch, series } = require('gulp');
+const sass = require('gulp-sass')(require('sass'));
+const autoprefixer = require('gulp-autoprefixer');
+const cleanCSS = require('gulp-clean-css');
+
+function compileSass() {
+  return src('src/scss/**/*.scss')
+    .pipe(sass().on('error', sass.logError))
+    .pipe(autoprefixer())
+    .pipe(cleanCSS())
+    .pipe(dest('dist/css'));
+}
+
+function watchFiles() {
+  watch('src/scss/**/*.scss', compileSass);
+}
+
+exports.default = series(compileSass, watchFiles);
+exports.build = compileSass;</code></pre>
+                        </div>
+                    </section>
+
+                    <!-- Полезные команды -->
+                    <section class="card">
+                        <h2>🚀 Полезные команды</h2>
+                        
+                        <h3>Webpack</h3>
+                        <ul>
+                            <li><code>npx webpack</code> - сборка проекта</li>
+                            <li><code>npx webpack --watch</code> - сборка с отслеживанием изменений</li>
+                            <li><code>npx webpack --mode=production</code> - продакшен сборка</li>
+                        </ul>
+
+                        <h3>Vite</h3>
+                        <ul>
+                            <li><code>npm run dev</code> - запуск сервера разработки</li>
+                            <li><code>npm run build</code> - сборка для продакшена</li>
+                            <li><code>npm run preview</code> - предпросмотр продакшен сборки</li>
+                        </ul>
+
+                        <h3>Gulp</h3>
+                        <ul>
+                            <li><code>npx gulp</code> - запуск default задачи</li>
+                            <li><code>npx gulp build</code> - запуск конкретной задачи</li>
+                            <li><code>npx gulp --tasks</code> - список всех задач</li>
+                        </ul>
+                    </section>
+                </div>
+
+                <!-- Сайдбар -->
+                <aside role="complementary">
+                    <div class="sidebar-sticky">
+                        <section class="card">
+                            <h3>📧 Подписка</h3>
+                            <form aria-label="Форма подписки">
+                                <input type="email" placeholder="Ваш email" required>
+                                <button type="submit">Подписаться</button>
+                            </form>
+                        </section>
+
+                        <section class="card">
+                            <h3>🔗 Полезные ссылки</h3>
+                            <ul class="footer-links">
+                                <li><a href="resources.html">Документация</a></li>
+                                <li><a href="comparison.html">Сравнение инструментов</a></li>
+                                <li><a href="https://github.com/" target="_blank">Примеры на GitHub</a></li>
+                            </ul>
+                        </section>
+
+                        <section class="card">
+                            <h3>💡 Советы</h3>
+                            <ul>
+                                <li>Начинайте с Vite для новых проектов</li>
+                                <li>Используйте готовые шаблоны</li>
+                                <li>Тестируйте разные подходы</li>
+                            </ul>
+                        </section>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </main>
+
+    <!-- Футер -->
+    <footer role="contentinfo">
+        <div class="container">
+            <div class="footer-content">
+                <div>
+                    <h3>О проекте</h3>
+                    <p>Образовательный проект о современных инструментах сборки</p>
+                </div>
+                <div>
+                    <h3>Ссылки</h3>
+                    <ul class="footer-links">
+                        <li><a href="index.html">Главная</a></li>
+                        <li><a href="webpack.html">Webpack</a></li>
+                        <li><a href="vite.html">Vite</a></li>
+                        <li><a href="gulp.html">Gulp</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3>Контакты</h3>
+                    <ul class="footer-links">
+                        <li>Email: SpongeBob2217@mail.ru</li>
+                        <li>GitHub: Vitalyboss77</li>
+                    </ul>
+                </div>
+            </div>
+            <div style="text-align: center; margin-top: var(--size-5); padding-top: var(--size-4); border-top: 1px solid var(--gray-7);">
+                <p>&copy; 2025 Сборщики проектов. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Бургер-меню
+        document.querySelector('.burger').addEventListener('click', function() {
+            document.querySelector('nav ul').classList.toggle('active');
+        });
+
+        // Закрытие меню при клике на ссылку (мобильные)
+        document.querySelectorAll('nav a').forEach(link => {
+            link.addEventListener('click', function() {
+                if (window.innerWidth < 768) {
+                    document.querySelector('nav ul').classList.remove('active');
+                }
+            });
+        });
+
+        // Обработка формы
+        document.querySelector('form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Спасибо за подписку!');
+            this.reset();
+        });
+    </script>
+</body>
+</html>
